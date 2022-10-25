@@ -1,27 +1,35 @@
 import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
-import MovieInfo from './components/Movieinfo.jsx';
+import Main from './components/Main.jsx';
 import Sketch from "./assets/js/Sketch";
 import * as helper from "./assets/js/helpers";
 import { ReactP5Wrapper } from "react-p5-wrapper";
 import AllMovieData from "./testing/movie-data";
-import Modal from './components/Modal';
-import NavBar from './components/NavBar'; 
+import Modal from './components/Modals/LoginModal';
+import NavBar from './components/Navbar/NavBar';
+import { db, auth } from './firebase-config'; 
+import {createUserWithEmailAndPassword } from "firebase/auth";
+import { UserContext } from './auth/UserContext';
+import { signUpUser } from "./auth/authFunctions" ;
 
 function App() {
-
+  let [user, setUser] = useState(null);
+  // let []
   let [spinCount, setSpinCount] = useState(0);
   let [landedNum, setLandedNum] = useState("");
   let [spinState, setSpinState] = useState(false);
   let [IMDBmovieData, setMovieData] = useState({})
   let [imgPath, setImgPath] = useState("");
   let [genres, setGenres] = useState("");
-  let [testVal, setTestVal] = useState({});
 
   let rootImgPath = "https://image.tmdb.org/t/p/w780"
   
+  
   const onSpinStart = (numExpected) => {
+    //TODO: prevent spin again until complete
+    setImgPath("")
+
     setLandedNum(numExpected)
     setSpinState(true)
     let {id:IMDBId, title, year, rank, image, crew, imDbRating} = AllMovieData.items[numExpected-1]
@@ -58,32 +66,40 @@ function App() {
   }
 
   useEffect(() => {
+    //listen for changes in logged in user
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      console.log(`current user is ${user?.email}`)
+      setUser(user)
+      
+    })
+
     return () => {
-      console.log("movie data UPDATED!!!")
-        
+      unsubscribe();
     };
 
-}, []);
+}, [user]);
 
   return (
     <>
-      <NavBar />
-      <div className="App-container"> 
-        <ReactP5Wrapper  
-            sketch={Sketch}
-            onSpinStart={onSpinStart}
-            onSpinComplete={onSpinComplete}
-        />
-        <div className='results'>
-          {(!spinState && spinCount > 0) ? <MovieInfo 
-            IMDBmovieData={IMDBmovieData}
-            spinState={spinState}
-            imgPath={imgPath}
-            
+      <UserContext.Provider value={user}>
+        <NavBar />
+        <div className="App-container"> 
+          <ReactP5Wrapper  
+              sketch={Sketch}
+              onSpinStart={onSpinStart}
+              onSpinComplete={onSpinComplete}
+          />
+          <div className='results'>
+            {(!spinState && spinCount > 0) ? <Main 
+              IMDBmovieData={IMDBmovieData}
+              spinState={spinState}
+              imgPath={imgPath}
+              
 
-          /> : null}
+            /> : null}
+          </div>
         </div>
-      </div>
+      </UserContext.Provider>
     </>
   )
 }

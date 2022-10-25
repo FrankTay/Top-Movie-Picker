@@ -33,7 +33,7 @@ function Sketch(p5) {
   //easing math
   let x = 0; // actual position
   let targetX = 0; // target position
-  let easing = 0.950; //speed at which animation eases to stop (default 0.025)
+  let easing = 0.550; //speed at which animation eases to stop (default 0.025)
   let lastDegRotation = 0;
 
   p5.setup = () => {  

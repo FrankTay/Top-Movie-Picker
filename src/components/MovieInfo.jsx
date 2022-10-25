@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import { UserContext } from '../auth/UserContext'; 
 
-function MovieInfo({IMDBmovieData,spinState,imgPath}) {
+function Main({IMDBmovieData,spinState,imgPath}) {
     // console.log(spinState);
     // const [imgPath, setImgPath] = useState(null);
-
+    const user = useContext(UserContext)
     let fadeClass = (!spinState) ? "Movie-info fade-in" : "Movie-info";
     
     return (
         <div 
             className={`${fadeClass}`} 
-            style={{ background: `url(${imgPath}) no-repeat`}}
+            style={{ background: `url(${imgPath}) no-repeat`, backgroundSize: "contain"}}//, backgroundRepeat: "no-repeat"}}
         >
-        
             <a 
                 href={`https://www.imdb.com/title/${IMDBmovieData.IMDBId}`} 
                 target='_blank' 
@@ -27,4 +27,4 @@ function MovieInfo({IMDBmovieData,spinState,imgPath}) {
     )
 }
 
-export default MovieInfo
+export default Main
