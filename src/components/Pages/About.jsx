@@ -19,7 +19,7 @@ export default function About() {
           </p>
           <hr className="my-6 border-gray-300" />
           <p>
-            Please check out my other projects @ TODO: insert github link here. 
+            Please check out my other projects @ <a className='underline' href='https://github.com/FrankTay'>FrankTay</a>
           </p>
           <button
             type="button"
@@ -27,7 +27,7 @@ export default function About() {
             data-mdb-ripple="true"
             data-mdb-ripple-color="light"
           >
-          <a href='#'>Source code</a>
+          <a href='https://github.com/FrankTay/Top-Movie-Picker'>Source code</a>
           </button>
         </div>
       </div>

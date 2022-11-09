@@ -20,7 +20,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  let [user, setUser] = useState(null);
+  let [user, setUser] = useState("pending");
   let [watchedList, setWatchedList] = useState([]);
   const hamburgerIcon = <FontAwesomeIcon icon={faBars} />
   const closeIcon = <FontAwesomeIcon icon={faTimes} />
@@ -33,7 +33,7 @@ function App() {
     const unsubscribe = auth.onAuthStateChanged(user => {
       console.log(`current user is ${user?.displayName} with email ${user?.email}`)
       
-      if(user) {
+      if(user && user !== "pending") {
         getWatchedList(user.displayName)
         .then((list) => {
           if (list) {
@@ -60,7 +60,7 @@ function App() {
             {/* <div className="logo"> top movie picker</div> */}
             <Link to={"/"}>
               <div className="logo">
-              Top Movie Picker
+                <img className='h-20' alt="home" src='./src/assets/img/spinning-wheel.png'/>
               </div>
             </Link>
             <input type="checkbox" id="nav-toggle-btn"/>

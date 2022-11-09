@@ -35,8 +35,6 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
     const checkBoxAction = async (e) => {
 
         const toggleStatus = e.target.checked;
-        // console.log(auth?.currentUser?.displayName)
-        // console.log(`user is box currently checked ${user.displayName}, ${user.email}`)
         if (toggleStatus){
             setCheckedState(true)
             addToWatchedList(auth?.currentUser?.displayName, user.email, IMDBmovieData.IMDBId)
@@ -77,8 +75,9 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
                     </div>
                     <div className="watched-status">
                         <h2>Already watched?</h2>
-                        {!user.user ? <p>Sign in to track this film</p> : 
-                        <input className="border-gray-300 rounded h-5 w-5" type={"checkbox"} onChange={(e) => checkBoxAction(e)} checked={checkedState}/> 
+                        {(!user.user && user.user !== "pending") ?  
+                        <input className="border-gray-300 rounded h-5 w-5" type={"checkbox"} onChange={(e) => checkBoxAction(e)} checked={checkedState}/> :
+                        <p>Sign in to track this film</p> 
                         }
                     </div>
                     

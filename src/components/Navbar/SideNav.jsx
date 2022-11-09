@@ -51,7 +51,6 @@ export default function SideNav() {
 
   return (
         <div className='my-2'>
-            
             <ul className="text-center">
                 <li>
                     <Link to={"/list"}>list</Link>

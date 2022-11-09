@@ -90,8 +90,8 @@ function SketchManager() {
            className={`backdrop ${fadeClass}`}
           // style={!spinState ?{ background: `url(${imgPath}) no-repeat`, backgroundSize: "contain"}: null}
           style={!spinState ?{ background: `url(${imgPath})`}: null}
-
-          ></div>
+          >
+          </div>
           
             <main className="App-container">
 

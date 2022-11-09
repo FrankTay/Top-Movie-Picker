@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from 'react'
 import { UserContext, MovieListContext, WatchedList } from '../../contexts/Contexts'; 
 import LoadingSpinner from '../Other/LoadingSpinner';
 import { addToWatchedList, removeFromWatchedList } from '../../auth/authFunctions';
+import { auth } from '../../firebase-config'; 
 
 export default function List() {
   const userState = useContext(UserContext)
@@ -24,10 +25,10 @@ export default function List() {
     const movieIndex = Number(e.target.dataset.index);
     const movieId = movieListData[movieIndex].id
     if (toggleStatus){
-      addToWatchedList(user.displayName, user.email, movieId)
+      addToWatchedList(auth?.currentUser?.displayName, auth?.currentUser?.email, movieId)
     }
     else {
-      removeFromWatchedList(user.displayName, user.email, movieId)
+      removeFromWatchedList(auth?.currentUser?.displayName, auth?.currentUser?.email, movieId)
     }
     
   }
@@ -39,7 +40,6 @@ export default function List() {
           <input onChange={(e) => checkBoxAction(e,i)} data-index={i} checked={checkStates[i]} type="checkbox"/> 
           }
       </td>
-
       <td >
       {!movie.image}
         <img className="w-1/2" src={movie.image}/>
@@ -64,30 +64,8 @@ export default function List() {
     watchedList.includes(movieListData[index].id) ? true : false
     ));
     
+  }, [watchedList]);
 
-//     const unsubscribe = auth.onAuthStateChanged(userData => {
-//       if (userData) {
-//         setLocalUserData(userData)
-//         getWatchedList(userData.displayName)
-//         .then((list) => {
-//           if (list){
-//             setWatchedList(list)
-//             // setCheckStates(movieListData.map(elem => {
-//             //   if (list.includes(elem.id)) return true
-//             //     return false
-//             // }))
-//           }
-//         })
-//       }
-//     })
-
-//     return () => {
-// //       unsubscribe();
-//     };
-  // });
-}, [watchedList]);
-
-// console.log(movieListData)
 
   return (
     <>

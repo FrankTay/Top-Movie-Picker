@@ -11,12 +11,11 @@ function Sketch(p5) {
   }
   
   let spinning = false;
-  let valOfVisualStoppage = 0.018 //
-  let wheelDiam = 500; // diameter of wheel
-  let wheelRadius = wheelDiam/2;
-  let totalSlices = 250; // total slices of wheel
-  let sliceDegIncrement = 360 / totalSlices; //difference in degrees of each slice (all slices equidistant)
-  // let tempStep = 2.44;
+  const valOfVisualStoppage = 0.018 //
+  const wheelDiam = 500; // diameter of wheel
+  const wheelRadius = wheelDiam/2;
+  const totalSlices = 250; // total slices of wheel
+  const sliceDegIncrement = 360 / totalSlices; //difference in degrees of each slice (all slices equidistant)
 
   // create array of degree points a half way points between sliceDegIncrement to place text on wheel
   let numPosAngles = new Array(totalSlices).fill(sliceDegIncrement /2) //~80% of sliceDegIncrement (1.152 @ 1.44 deg difference between slices)
@@ -26,16 +25,13 @@ function Sketch(p5) {
   }
 
   let nums = new Array(totalSlices).fill(1).map((x,i) => {return i+1});
-  // let anglesForNums = [90,180,270,360];
-  // let angleRotate = 0.0;
   let canvasSizeX = window.innerWidth/2 ; //650;
   let canvasSizeY = window.innerHeight ; //500;
-  // let translateX = -1000
 
   //easing math
   let x = 0; // actual position
   let targetX = 0; // target position
-  let easing = 0.525; //speed at which animation eases to stop (default 0.025)
+  let easing = 0.055; //speed at which animation eases to stop (default 0.025)
   let lastDegRotation = 0;
 
   p5.setup = () => {  
@@ -59,27 +55,17 @@ function Sketch(p5) {
       await onSpinComplete();
       spinning = false;
     } 
-    // console.log(dx)
     pieChart(wheelDiam, totalSlices)
     wordsPie(nums, numPosAngles)
- 
-    // p5.pop()
-     
-    //   drawDot()
-
-    // p5.push()
-      
-  
   }
+
   p5.windowResized = () => {
     p5.resizeCanvas(canvasSizeX, canvasSizeY);
     p5.redraw()
   }
 
-
-
   function wordsPie(wordsArray, angles){
-    let textPlacement = 0.96 //percent distance from center of circle in relation to outer edge
+    const textPlacement = 0.96 //percent distance from center of circle in relation to outer edge
     wordsArray.forEach((x,i) =>{   
       if (i % 2 !== 0){ // set color
         p5.fill(246,199,0) //imdb yellow
@@ -104,11 +90,6 @@ function Sketch(p5) {
         p5.fill(246,199,0)
       } else {p5.fill("black")}
       
-      // pop()
-      // image(img,wheelRadius,0)
-      // rotate(radians(sliceDegIncrement))
-      // push()
-      
       p5.arc(
         0,
         0,
@@ -120,23 +101,18 @@ function Sketch(p5) {
       
       lastAngle += p5.radians(sliceDegIncrement);
       
-    }
-    
+    }  
   }
 
   function drawDot(){
     p5.push()
       p5.fill("white")
       p5.stroke("green")
-      // circle(wheelRadius, 0, 2);
       p5.triangle(wheelRadius, 0, (wheelRadius)+3, -3, (wheelRadius)+3, 3);
     p5.pop()
   }
 
-
-
-  function createWheelNeedle(){
-    
+  function createWheelNeedle(){  
     const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
     pin.position(wheelRadius+172, (p5.height / 2)-82.5);
     pin.mousePressed(wheelSpinAction)
@@ -155,24 +131,23 @@ function Sketch(p5) {
   }
 
   function wheelSpinAction(){
-
-    let step = p5.random(720,1440); //amount of degrees to rotate
+    const step = p5.random(720,1440); //amount of degrees to rotate
     spinning = true;
     targetX += step;
-    let expectedLandedNumber = getEstimatedEndPosition(step)
-    console.log(expectedLandedNumber)
+    const expectedLandedNumber = getEstimatedEndPosition(step)
     onSpinStart(expectedLandedNumber);
   }
 
   function getEstimatedEndPosition(step){
     //lastDegRotation compensates for current position for subsequent spins
-    let sub360DegRotation = (lastDegRotation+step) % 360;
-    let rawQuotient = sub360DegRotation / sliceDegIncrement;
-    let roundedUp = Math.ceil(rawQuotient);
+    const sub360DegRotation = (lastDegRotation+step) % 360;
+    const rawQuotient = sub360DegRotation / sliceDegIncrement;
+    const roundedUp = Math.ceil(rawQuotient);
   
     lastDegRotation = sub360DegRotation;
     
     return roundedUp;
   }
 }
+
 export default Sketch 
