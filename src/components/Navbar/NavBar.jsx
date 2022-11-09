@@ -5,7 +5,7 @@ import { SignedIn } from './SignedIn';
 import { SignedOff } from './SignedOff';
 import { db, auth } from '../../firebase-config'
 import { signOut } from "firebase/auth";
-import { UserContext } from '../../auth/UserContext'; 
+import { UserContext } from '../../contexts/Contexts'; 
 
 export default function NavBar() {
     const user = useContext(UserContext)
@@ -35,10 +35,13 @@ export default function NavBar() {
             <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
                 <div className="w-full relative flex justify-between lg:w-auto  px-4 lg:static lg:block lg:justify-start">
                     <a className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white" href="#">
-                        Top Movie Picker
+                        Logo here
                     </a>
                 </div>
                 <div className="lg:flex flex-grow items-center" id="example-navbar-warning">
+                <button className='border' type='button' onClick={() => console.log(user)}>
+                    check user
+                </button>
                 {/* if user is logged in, show user options, else show sign in/up buttons  */}
                 {user ? <SignedIn logOff={logOff}/> : <SignedOff 
                     setShowSignUpModal={setShowSignUpModal}

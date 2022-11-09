@@ -1,45 +1,153 @@
 
+:root {
+  --nav-w: 5.5rem;
+  --nav-w-neg: -5.5rem;
+  --nav-btn-offset: 5px;
+}
 
-/* #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-} */
+body {
+  /* https://uigradients.com/#Titanium */
+  background: #283048;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #859398, #283048);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #859398, #283048); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+a {
+  font-weight: 500;
+  /* color: #646cff; */
+  text-decoration-line: underline;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+.logo {
+  position: fixed;
+  top:0;
+  left:0px;
+}
+
+
+ /* ************************** HOME PAGE **************************** */
+
+ /* ------------------SPIN WHEEL--------------------------- */
+
+.spinButton{
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: white;
+  line-height: 115%;
+}
+
+.buttonAnimation{
+  background-color: green;
+  animation: changeColor ease;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+}
+
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -5;
+  opacity: 0.15;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
 
 .App-container{
   display: flex;
   justify-content: center;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+.list-container {
+  justify-content: space-between;
+}
+
+/* ******************** NAV BAR **************** */
+
+
+#nav-toggle-btn[type="checkbox"] {
+  display: none;
+}
+
+label[for="nav-toggle-btn"] {
+  position: fixed;
+  top: 0;
+  right: var(--nav-btn-offset);
+  font-size: xx-large;
+  transition: .3s all;
+}
+
+.nav-content { 
+  position: fixed;
+  top: 0;
+  right: var(--nav-w-neg);
+  width: var(--nav-w);
+  height: 100%;
+  background: #EB5757;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #000000, #EB5757);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #000000, #EB5757); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  transition: .3s all;
+}
+
+/* Move hamburger over */
+#nav-toggle-btn[type="checkbox"]:checked ~ label[for="nav-toggle-btn"]{
+  right: calc(var(--nav-w) + var(--nav-btn-offset));
+}
+
+/* Move nav bar into view */
+#nav-toggle-btn[type="checkbox"]:checked ~ .nav-content {
+  /* transform: translateX(0) */
+  right: 0;
+}
+
+ /* Shift page content over */
+#nav-toggle-btn[type="checkbox"]:checked ~ .route-container{
+ margin-right: var(--nav-w);
+ /* padding-right: 500px; */
+
+}
+
+.route-container {
+  transition: .3s all;
 }
 
 .results{
-  min-width: 50vw;
-  background-color: #646465;
-
+  width: 50%;
+  padding-right: 40px;
 }
 
+
 .Movie-info {
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-  /* background-size: cover; */
   background-repeat: no-repeat;
-  width: 50vw;
   height: 100vh;
   text-align: center;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  /* text-shadow: 2px 2px 4px #000000; */
- 
-}
-
-.Movie-info img{ 
-  border: green 4px dashed;
-}
-
-.Movie-info h1 {
   color: white;
 }
 
-.BorderA{
-  border: red dotted 5px;
+.Movie-info h1{ 
+  font-size: 2.5rem;
+}
+
+.Movie-info p{ 
+  font-size: 1.75rem;
 }
 
 .fade-in {
@@ -51,6 +159,39 @@
   100% { opacity: 1; }
 }
 
+.fade-in-bg {
+  animation: fadeInBg 5s;
+}
+
+@keyframes fadeInBg {
+  0% { opacity: 0; }
+  100% { opacity: 0.15; }
+}
+
+.fade-out {
+  animation: fadeOut 3s;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes changeColor {
+  0% {
+    background-color: #3a6186; 
+  }
+  
+  50% {
+    background-color: #89253e;
+  }
+  
+  100% {
+    background-color: #3a6186;
+  }
+}
+
+/* 
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -70,7 +211,7 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {

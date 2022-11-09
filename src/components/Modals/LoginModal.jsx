@@ -61,9 +61,9 @@ export default function LoginModal({closeLoginModal}) {
                     className="p-1 ml-auto border-0 text-black  float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={closeLoginModal}
                   >
-                    <span className="text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
+                    {/* <span className="text-black  h-6 w-6 text-2xl block outline-none focus:outline-none"> */}
+                      &times;
+                    {/* </span> */}
                   </button>
                 </div>
                 {/*body*/}
@@ -117,7 +117,7 @@ export default function LoginModal({closeLoginModal}) {
               </div>
             </div>
           </div>
-          <div  onClick={ () => console.log("overlay clicked")} className="opacity-50 fixed inset-0 z-40 bg-black"></div>
+          <div className="opacity-50 fixed inset-0 z-40 bg-black"></div>
         </>
 
   );

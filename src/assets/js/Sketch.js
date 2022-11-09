@@ -2,11 +2,12 @@
 function Sketch(p5) {
   let onSpinStart;
   let onSpinComplete;
-
+  let watchedList
 
   p5.updateWithProps = props => { 
     onSpinStart = props.onSpinStart;
     onSpinComplete = props.onSpinComplete; 
+    watchedList = props.watchedList;
   }
   
   let spinning = false;
@@ -19,30 +20,32 @@ function Sketch(p5) {
 
   // create array of degree points a half way points between sliceDegIncrement to place text on wheel
   let numPosAngles = new Array(totalSlices).fill(sliceDegIncrement /2) //~80% of sliceDegIncrement (1.152 @ 1.44 deg difference between slices)
-
+  // modify numPosAngles to increment each slice angle
   for (var i = 1; i < numPosAngles.length; i++) {
     numPosAngles[i] = numPosAngles[i-1] + sliceDegIncrement
   }
+
   let nums = new Array(totalSlices).fill(1).map((x,i) => {return i+1});
   // let anglesForNums = [90,180,270,360];
   // let angleRotate = 0.0;
-  let canvasSizeX = window.innerWidth/2; //650;
-  let canvasSizeY = window.innerHeight; //500;
+  let canvasSizeX = window.innerWidth/2 ; //650;
+  let canvasSizeY = window.innerHeight ; //500;
   // let translateX = -1000
 
   //easing math
   let x = 0; // actual position
   let targetX = 0; // target position
-  let easing = 0.550; //speed at which animation eases to stop (default 0.025)
+  let easing = 0.525; //speed at which animation eases to stop (default 0.025)
   let lastDegRotation = 0;
 
   p5.setup = () => {  
+    
         p5.createCanvas(canvasSizeX, canvasSizeY);
-        createSpinButton()
+        createWheelNeedle()
   }
 
   p5.draw = async () => {
-    p5.background(100);
+    // p5.background(100);
     // translate(width/2, height / 2)
     p5.translate(-7000, p5.height / 2); //-7000 for 30 scale / -9500 for 40 scale
     
@@ -60,11 +63,11 @@ function Sketch(p5) {
     pieChart(wheelDiam, totalSlices)
     wordsPie(nums, numPosAngles)
  
-    p5.pop()
+    // p5.pop()
      
-      drawDot()
+    //   drawDot()
 
-    p5.push()
+    // p5.push()
       
   
   }
@@ -130,23 +133,34 @@ function Sketch(p5) {
     p5.pop()
   }
 
-  function createSpinButton(){
-    let button = p5.createButton('SPIN');
-    button.position(wheelRadius, 0, "fixed");
-    button.mousePressed(wheelSpinAction)
+
+
+  function createWheelNeedle(){
+    
+    const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
+    pin.position(wheelRadius+172, (p5.height / 2)-82.5);
+    pin.mousePressed(wheelSpinAction)
+
+    const div = p5.createDiv();
+    const line1 = p5.createP("CLICK");
+    const line2 = p5.createP("TO");
+    const line3 = p5.createP("SPIN");
+    div.child(line1).child(line2).child(line3)
+
+    div.mousePressed(wheelSpinAction)
+    div.addClass("spinButton")
+    div.addClass("buttonAnimation")
+
+    div.position(wheelRadius + 266, p5.height/2-38)
   }
 
-  // p5.mousePressed = () => {
-  //   let step = p5.random(720,1440); //amount of degrees to rotate
-  //   targetX += step;
-  // }
-
   function wheelSpinAction(){
-    
+
     let step = p5.random(720,1440); //amount of degrees to rotate
     spinning = true;
     targetX += step;
     let expectedLandedNumber = getEstimatedEndPosition(step)
+    console.log(expectedLandedNumber)
     onSpinStart(expectedLandedNumber);
   }
 

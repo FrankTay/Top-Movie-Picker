@@ -1,75 +1,48 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
-import Main from './components/Main.jsx';
-import Sketch from "./assets/js/Sketch";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
 import * as helper from "./assets/js/helpers";
-import { ReactP5Wrapper } from "react-p5-wrapper";
-import AllMovieData from "./testing/movie-data";
-import Modal from './components/Modals/LoginModal';
 import NavBar from './components/Navbar/NavBar';
-import { db, auth } from './firebase-config'; 
-import {createUserWithEmailAndPassword } from "firebase/auth";
-import { UserContext } from './auth/UserContext';
-import { signUpUser } from "./auth/authFunctions" ;
+import SideNav from './components/Navbar/SideNav';
+import { auth } from './firebase-config'; 
+import { getWatchedList } from './auth/authFunctions';
+import { UserContext, MovieListContext, WatchedList } from './contexts/Contexts';
+import SketchManager from './components/Pages/SketchManager';
+import List from './components/Pages/List'
+import About from './components/Pages/About'
+import AllMovieData from "./testing/movie-data";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 
 function App() {
   let [user, setUser] = useState(null);
-  // let []
-  let [spinCount, setSpinCount] = useState(0);
-  let [landedNum, setLandedNum] = useState("");
-  let [spinState, setSpinState] = useState(false);
-  let [IMDBmovieData, setMovieData] = useState({})
-  let [imgPath, setImgPath] = useState("");
-  let [genres, setGenres] = useState("");
+  let [watchedList, setWatchedList] = useState([]);
+  const hamburgerIcon = <FontAwesomeIcon icon={faBars} />
+  const closeIcon = <FontAwesomeIcon icon={faTimes} />
 
-  let rootImgPath = "https://image.tmdb.org/t/p/w780"
-  
-  
-  const onSpinStart = (numExpected) => {
-    //TODO: prevent spin again until complete
-    setImgPath("")
-
-    setLandedNum(numExpected)
-    setSpinState(true)
-    let {id:IMDBId, title, year, rank, image, crew, imDbRating} = AllMovieData.items[numExpected-1]
-    setMovieData(prev => ({ ...prev, IMDBId, title, year, rank, image, crew, imDbRating}))
-    const endpoints = { 
-      detailsFromIMDBIdQueryURL: `https://api.themoviedb.org/3/find/${IMDBId}?api_key=${import.meta.env.VITE_TMDB_API_KEY}&language=en-US&external_source=imdb_id`,
-      // detailsFromTMDB: `https://api.themoviedb.org/3/movie/${TMDBId}?api_key=62a86f710896a3a012c01ff88125c8e8&language=en-US`,
-    }
-    //get general movie info from query based on IMDB id
-    helper.fetchData(endpoints.detailsFromIMDBIdQueryURL)
-      .then(data => {
-        const {backdrop_path:bdPath, id:TMDBId} = data.movie_results[0];
-        setImgPath(rootImgPath+bdPath)
-        const detailsFromTMDBURL = `https://api.themoviedb.org/3/movie/${TMDBId}?api_key=${import.meta.env.VITE_TMDB_API_KEY}&language=en-US`;
-
-      console.log(data.movie_results[0])
-        // get general movie info from query of TMDB id
-      return helper.fetchData(detailsFromTMDBURL)
-      })
-      .then(data => {
-        console.log(data)
-      });
-
-      //TODO:
-// get genre, mpaa rating, languages
-// starting + pics?
-// Streaming options
-
-  };
-
-  const onSpinComplete = () => {
-    setSpinCount(prev => prev + 1)
-    setSpinState(false)
-  }
+  //TODO: change to fetch data from server on deploy
+  let [IMDBMovieList, setIMDBMovieList] = useState(AllMovieData.items);
 
   useEffect(() => {
     //listen for changes in logged in user
     const unsubscribe = auth.onAuthStateChanged(user => {
-      console.log(`current user is ${user?.email}`)
-      setUser(user)
+      console.log(`current user is ${user?.displayName} with email ${user?.email}`)
+      
+      if(user) {
+        getWatchedList(user.displayName)
+        .then((list) => {
+          if (list) {
+            setWatchedList(list)
+            setUser(user)
+          }
+        })
+      }
+
       
     })
 
@@ -80,27 +53,36 @@ function App() {
 }, [user]);
 
   return (
-    <>
-      <UserContext.Provider value={user}>
-        <NavBar />
-        <div className="App-container"> 
-          <ReactP5Wrapper  
-              sketch={Sketch}
-              onSpinStart={onSpinStart}
-              onSpinComplete={onSpinComplete}
-          />
-          <div className='results'>
-            {(!spinState && spinCount > 0) ? <Main 
-              IMDBmovieData={IMDBmovieData}
-              spinState={spinState}
-              imgPath={imgPath}
-              
+    <Router>
+      <UserContext.Provider value={{user,setUser}}>
+        <MovieListContext.Provider value={IMDBMovieList}>
+          <WatchedList.Provider value={watchedList}>
+            {/* <div className="logo"> top movie picker</div> */}
+            <Link to={"/"}>
+              <div className="logo">
+              Top Movie Picker
+              </div>
+            </Link>
+            <input type="checkbox" id="nav-toggle-btn"/>
+                <label htmlFor="nav-toggle-btn">
+                  {hamburgerIcon}
+                </label>
 
-            /> : null}
-          </div>
-        </div>
+              <div className='route-container'>
+                <Routes>
+                  <Route exact path="/" element={<SketchManager />}/>
+                  <Route exact path="/list" element={<List />}/>
+                  <Route exact path="/about" element={<About />} />              
+                </Routes>
+              </div>
+              <nav className='nav-content' >
+                  <SideNav/>
+              </nav>
+
+          </WatchedList.Provider>
+        </MovieListContext.Provider>
       </UserContext.Provider>
-    </>
+    </Router>
   )
 }
 
