@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from 'react'
-import { UserContext, WatchedList, MovieListContext } from '../../contexts/Contexts'; 
-import { addToWatchedList, removeFromWatchedList, getWatchedList } from '../../auth/authFunctions';
+import { UserContext, WatchedList } from '../../contexts/Contexts'; 
+import { modifyWatchedList, getWatchedList } from '../../auth/authFunctions';
 import { auth } from '../../firebase-config'; 
 import '../../App.css'
+import justWatchLogo from "./JustWatch-logo.webp"
 
 const TMDBImagePrefixURL = "https://image.tmdb.org/t/p/original"
 const JWlink  = `https://www.justwatch.com`
@@ -11,9 +12,12 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
     // console.log(spinState);
     // const [imgPath, setImgPath] = useState(null);
     const crew = IMDBmovieData.crew.split(",")
-    const user = useContext(UserContext)
-    const watchedList = useContext(WatchedList)
-    const movieListData = useContext(MovieListContext)
+    const userState = useContext(UserContext)
+    const user = userState.user
+
+    const watchedListState = useContext(WatchedList)
+    const watchedList = watchedListState.watchedList;
+    const setWatchedList = watchedListState.setWatchedList;
     const [checkedState, setCheckedState] = useState(watchedList.includes(IMDBmovieData.IMDBId))
 
     const fadeClass = (!spinState) ? "fade-in" : "";
@@ -21,8 +25,8 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
     const ads = streamProviders?.ads
     const free = streamProviders?.free
 
-    const streamingSites =  [flatrate, ads, free].flat().filter(x => x != undefined)
-    const iconSize = (streamingSites.length <= 4) ? 20 : 16
+    const streamingSites =  [flatrate, ads, free].flat().filter(x => x != undefined);
+    const iconSize = (streamingSites.length <= 4) ? 20 : 16;
 
     const streamIcons = streamingSites.map((elem) => 
         <li key={elem.provider_id} className="m-2">
@@ -33,16 +37,19 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
     )
     
     const checkBoxAction = async (e) => {
-
         const toggleStatus = e.target.checked;
-        if (toggleStatus){
-            setCheckedState(true)
-            addToWatchedList(auth?.currentUser?.displayName, user.email, IMDBmovieData.IMDBId)
-        }
-        else {
-            setCheckedState(false)
-            removeFromWatchedList(auth?.currentUser?.displayName, user.email, IMDBmovieData.IMDBId)
-        }
+        const currentUser = auth?.currentUser?.displayName;
+        const action = toggleStatus ? "ADD" : "REMOVE";
+
+        (toggleStatus) ? setCheckedState(true) : setCheckedState(false)
+
+        modifyWatchedList(currentUser, user.email, IMDBmovieData.IMDBId, action)
+            .then(() => {
+                const latestList = getWatchedList(currentUser)
+                  .then(list => {
+                    setWatchedList(list) 
+                })
+              })
     }
 //TODO: necessary effect?
     useEffect(()=> {
@@ -75,7 +82,7 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
                     </div>
                     <div className="watched-status">
                         <h2>Already watched?</h2>
-                        {(!user.user && user.user !== "pending") ?  
+                        {(user) ?  
                         <input className="border-gray-300 rounded h-5 w-5" type={"checkbox"} onChange={(e) => checkBoxAction(e)} checked={checkedState}/> :
                         <p>Sign in to track this film</p> 
                         }
@@ -101,7 +108,7 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
                 <div className='my-2 h-36 flex justify-center align-center ' >
                     <h2>Viewing options provided by 
                         <a className='my-2 h-36 flex justify-center align-center' href={JWlink}>   
-                            <img className="h-4" src='./src/assets/img/JustWatch-logo.webp'/>
+                            <img className="h-4" src={justWatchLogo}/>
                         </a>
                     </h2>
                 </div>

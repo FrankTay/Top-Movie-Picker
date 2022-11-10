@@ -1,13 +1,16 @@
 import { useState, useContext, useEffect } from 'react'
 import { UserContext, MovieListContext, WatchedList } from '../../contexts/Contexts'; 
 import LoadingSpinner from '../Other/LoadingSpinner';
-import { addToWatchedList, removeFromWatchedList } from '../../auth/authFunctions';
+import { modifyWatchedList, getWatchedList} from '../../auth/authFunctions';
 import { auth } from '../../firebase-config'; 
 
 export default function List() {
   const userState = useContext(UserContext)
   const user = userState.user
-  const watchedList = useContext(WatchedList)
+  const watchedListState = useContext(WatchedList)
+  const watchedList = watchedListState.watchedList
+  const setWatchedList = watchedListState.setWatchedList
+
   const movieListData = useContext(MovieListContext)
   const [checkStates, setCheckStates] = useState(Array(movieListData.length).fill(false).map((item, index) =>
   watchedList.includes(movieListData[index].id) ? true : false
@@ -24,13 +27,17 @@ export default function List() {
     const toggleStatus = e.target.checked;
     const movieIndex = Number(e.target.dataset.index);
     const movieId = movieListData[movieIndex].id
-    if (toggleStatus){
-      addToWatchedList(auth?.currentUser?.displayName, auth?.currentUser?.email, movieId)
-    }
-    else {
-      removeFromWatchedList(auth?.currentUser?.displayName, auth?.currentUser?.email, movieId)
-    }
-    
+    const currentUser = auth?.currentUser?.displayName;
+    const currentEmail = auth?.currentUser?.email
+    const action = toggleStatus ? "ADD" : "REMOVE";
+
+    modifyWatchedList(currentUser, currentEmail, movieId, action)
+    .then(() => {
+      const latestList = getWatchedList(currentUser)
+        .then(list => {
+          setWatchedList(list) 
+      })
+    })
   }
   
   const movieEntries = movieListData.map((movie,i) => 

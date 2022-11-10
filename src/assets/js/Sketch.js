@@ -1,21 +1,23 @@
+import imgUrl from './pinwhite214x165.png'
 
 function Sketch(p5) {
   let onSpinStart;
   let onSpinComplete;
-  let watchedList
+  let watchedRemoved;
 
   p5.updateWithProps = props => { 
     onSpinStart = props.onSpinStart;
     onSpinComplete = props.onSpinComplete; 
-    watchedList = props.watchedList;
+    watchedRemoved = props.watchedRemoved;
   }
   
+  console.log(watchedRemoved)
   let spinning = false;
   const valOfVisualStoppage = 0.018 //
   const wheelDiam = 500; // diameter of wheel
   const wheelRadius = wheelDiam/2;
-  const totalSlices = 250; // total slices of wheel
-  const sliceDegIncrement = 360 / totalSlices; //difference in degrees of each slice (all slices equidistant)
+  let totalSlices = 250; // total slices of wheel
+  let sliceDegIncrement = 360 / totalSlices; //difference in degrees of each slice (all slices equidistant)
 
   // create array of degree points a half way points between sliceDegIncrement to place text on wheel
   let numPosAngles = new Array(totalSlices).fill(sliceDegIncrement /2) //~80% of sliceDegIncrement (1.152 @ 1.44 deg difference between slices)
@@ -24,19 +26,20 @@ function Sketch(p5) {
     numPosAngles[i] = numPosAngles[i-1] + sliceDegIncrement
   }
 
-  let nums = new Array(totalSlices).fill(1).map((x,i) => {return i+1});
+  // let nums = new Array(totalSlices).fill(1).map((x,i) => {return i+1});
   let canvasSizeX = window.innerWidth/2 ; //650;
   let canvasSizeY = window.innerHeight ; //500;
 
   //easing math
   let x = 0; // actual position
   let targetX = 0; // target position
-  let easing = 0.055; //speed at which animation eases to stop (default 0.025)
+  let easing = 0.555; //speed at which animation eases to stop (default 0.055)
   let lastDegRotation = 0;
 
   p5.setup = () => {  
     
         p5.createCanvas(canvasSizeX, canvasSizeY);
+        checkForUpdatedProps()
         createWheelNeedle()
   }
 
@@ -56,7 +59,7 @@ function Sketch(p5) {
       spinning = false;
     } 
     pieChart(wheelDiam, totalSlices)
-    wordsPie(nums, numPosAngles)
+    wordsPie(watchedRemoved, numPosAngles)
   }
 
   p5.windowResized = () => {
@@ -76,7 +79,7 @@ function Sketch(p5) {
 
       p5.push()
       p5.rotate(p5.radians(angles[i]));
-      p5.text(x,(wheelRadius) * textPlacement, 0)  
+      p5.text(x.rank,(wheelRadius) * textPlacement, 0)  
         p5.pop()
     });
     
@@ -113,7 +116,9 @@ function Sketch(p5) {
   }
 
   function createWheelNeedle(){  
-    const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
+    // const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
+    const pin = p5.createImg(imgUrl);
+    // pin.id('needle')
     pin.position(wheelRadius+172, (p5.height / 2)-82.5);
     pin.mousePressed(wheelSpinAction)
 
@@ -134,10 +139,10 @@ function Sketch(p5) {
     const step = p5.random(720,1440); //amount of degrees to rotate
     spinning = true;
     targetX += step;
-    const expectedLandedNumber = getEstimatedEndPosition(step)
+    const expectedLandedNumber = getEstimatedEndPosition(step) -1
     onSpinStart(expectedLandedNumber);
   }
-
+  //wheel math to deduce what positon when spin complete
   function getEstimatedEndPosition(step){
     //lastDegRotation compensates for current position for subsequent spins
     const sub360DegRotation = (lastDegRotation+step) % 360;
@@ -148,6 +153,29 @@ function Sketch(p5) {
     
     return roundedUp;
   }
+
+  function resetWheel(){
+    totalSlices = watchedRemoved.length
+    sliceDegIncrement = 360 / totalSlices;
+    numPosAngles = new Array(totalSlices).fill(sliceDegIncrement /2)
+
+    for (var i = 1; i < numPosAngles.length; i++) {
+      numPosAngles[i] = numPosAngles[i-1] + sliceDegIncrement
+    }
+  }
+
+  function checkForUpdatedProps(oldvalue) {
+    undefined === oldvalue && (oldvalue = watchedRemoved);
+    const clearcheck = setInterval(repeatcheck,1000,oldvalue);
+    function repeatcheck(oldvalue) {
+        if (watchedRemoved !== oldvalue) {
+            clearInterval(clearcheck);
+            resetWheel()
+            checkForUpdatedProps()
+        }
+    }
+}
+
 }
 
 export default Sketch 

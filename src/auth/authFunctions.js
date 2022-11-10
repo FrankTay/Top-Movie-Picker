@@ -22,7 +22,7 @@ export const signUpUser = (auth,userName, email,password) => {
     });
 }
 
-export const loginUser = (auth, email,password) => {
+export const loginUser = (auth, email, password) => {
   return signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
     // Signed in 
@@ -57,20 +57,11 @@ export const addUserToDB = (userName, email) => {
 
 export const addToWatchedList = async (userName, email, data) => {
   const usersDocRef = doc(db, "users", userName)
-  // console.log(`current user is ${userName} with email ${email}`)
-  // try {
-    return await updateDoc(usersDocRef, {
-      watched: arrayUnion(data)
-    })
-  // }
-  // catch (error) {
-  //   console.log(`we got an error - ${error}`)
-  // }
-  
-    
-  //.then(response => {console.log(response)})
-  // return getDoc(usersDocRef)
-  // .then(result => console.log(result))
+
+  return await updateDoc(usersDocRef, {
+    watched: arrayUnion(data)
+  })
+ 
 }
 
 export const removeFromWatchedList = async (userName, email, data) => {
@@ -81,13 +72,21 @@ export const removeFromWatchedList = async (userName, email, data) => {
   })
 }
 
+//TODO: consolidate above 2 funcs with this single one
+export const modifyWatchedList = async (userName, email, data, action) => {
+  const usersDocRef = doc(db, "users", userName)
+
+  return await updateDoc(usersDocRef, 
+    (action === "ADD") ?  {watched: arrayUnion(data)} : { watched: arrayRemove(data)}
+  )
+}
+
 export const getWatchedList = async (userName) => {
   const usersDocRef = doc(db, "users", userName)
 
   const docSnap = await getDoc(usersDocRef);
 
   if (docSnap.exists()) {
-    // console.log("Document data:", docSnap.data().watched);
     return docSnap.data().watched
   } else {
     // doc.data() will be undefined in this case

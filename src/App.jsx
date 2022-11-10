@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import spinWheelIcon from "./spinning-wheel.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
 import * as helper from "./assets/js/helpers";
-import NavBar from './components/Navbar/NavBar';
 import SideNav from './components/Navbar/SideNav';
 import { auth } from './firebase-config'; 
 import { getWatchedList } from './auth/authFunctions';
@@ -20,7 +20,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  let [user, setUser] = useState("pending");
+  let [user, setUser] = useState(null);
   let [watchedList, setWatchedList] = useState([]);
   const hamburgerIcon = <FontAwesomeIcon icon={faBars} />
   const closeIcon = <FontAwesomeIcon icon={faTimes} />
@@ -31,7 +31,7 @@ function App() {
   useEffect(() => {
     //listen for changes in logged in user
     const unsubscribe = auth.onAuthStateChanged(user => {
-      console.log(`current user is ${user?.displayName} with email ${user?.email}`)
+      // console.log(`login change occured. current user is ${user?.displayName} with email ${user?.email}`)
       
       if(user && user !== "pending") {
         getWatchedList(user.displayName)
@@ -41,9 +41,11 @@ function App() {
             setUser(user)
           }
         })
-      }
+      } else {
+        setWatchedList([])
+            setUser(null)
 
-      
+      }
     })
 
     return () => {
@@ -56,11 +58,11 @@ function App() {
     <Router>
       <UserContext.Provider value={{user,setUser}}>
         <MovieListContext.Provider value={IMDBMovieList}>
-          <WatchedList.Provider value={watchedList}>
+          <WatchedList.Provider value={{watchedList, setWatchedList}}>
             {/* <div className="logo"> top movie picker</div> */}
             <Link to={"/"}>
               <div className="logo">
-                <img className='h-20' alt="home" src='./src/assets/img/spinning-wheel.png'/>
+                <img className='h-20' alt="home" src={spinWheelIcon}/>
               </div>
             </Link>
             <input type="checkbox" id="nav-toggle-btn"/>

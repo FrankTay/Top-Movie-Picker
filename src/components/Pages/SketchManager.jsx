@@ -1,42 +1,38 @@
 import { useState, useEffect, useContext } from 'react'
 import { ReactP5Wrapper } from "react-p5-wrapper";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
 
 import '../../App.css'
 import MovieInfo from './MovieInfo.jsx';
 import Sketch from "../../assets/js/Sketch";
-import SideNav from '../Navbar/SideNav';
 import * as helper from "../../assets/js/helpers";
 import AllMovieData from "../../testing/movie-data";
-import { WatchedList } from '../../contexts/Contexts';
+import { WatchedList, MovieListContext } from '../../contexts/Contexts';
 
 
 
 function SketchManager() {
- 
-    let [spinCount, setSpinCount] = useState(0);
-    let [landedNum, setLandedNum] = useState("");
-    let [spinState, setSpinState] = useState(false);
-    let [IMDBmovieData, setMovieData] = useState({})
-    let [TMDBmovieData, setTMDBMovieData] = useState({})
-    let [streamProviders, setStreamProviders] = useState({})
-    let [imgPath, setImgPath] = useState("");
-    const watchedList = useContext(WatchedList)
-    const hamburgerIcon = <FontAwesomeIcon icon={faBars} />
-    const closeIcon = <FontAwesomeIcon icon={faTimes} />
-
-    let rootImgPath = "https://image.tmdb.org/t/p/w1280"
-    let fadeClass = (!spinState) ? "fade-in-bg" : "fade-out";
+    const watchedListState = useContext(WatchedList)
+    const watchedList = watchedListState.watchedList
+    const setWatchedList = watchedListState.setWatchedList
+    const movieList = useContext(MovieListContext)
+    const [spinCount, setSpinCount] = useState(0);
+    const [landedNum, setLandedNum] = useState("");
+    const [spinState, setSpinState] = useState(false);
+    const [IMDBmovieData, setMovieData] = useState({})
+    const [TMDBmovieData, setTMDBMovieData] = useState({})
+    const [streamProviders, setStreamProviders] = useState({})
+    const [imgPath, setImgPath] = useState("");
+    const [watchedRemoved, setWatchedRemoved] = useState(movieList.filter((elem,i) => !watchedList.includes(elem.id)));
+    const rootImgPath = "https://image.tmdb.org/t/p/w1280"
+    const fadeClass = (!spinState) ? "fade-in-bg" : "fade-out";
 
     const onSpinStart = (numExpected) => {
     //TODO: prevent spin again until complete
-    // setImgPath("")
 
     setLandedNum(numExpected)
     setSpinState(true)
-    //TODO: Replace with fetch func
-    let {id:IMDBId, title, year, rank, image, crew, imDbRating} = AllMovieData.items[numExpected-1]
+    //TODO: Replace with fetch func to server
+    const {id:IMDBId, title, year, rank, image, crew, imDbRating} = watchedRemoved[numExpected]//AllMovieData.items[numExpected-1]
     setMovieData(prev => ({ ...prev, IMDBId, title, year, rank, image, crew, imDbRating}))
     
     const endpoints = { 
@@ -53,14 +49,14 @@ function SketchManager() {
         setImgPath(rootImgPath+bdPath)
         const detailsFromTMDBURL = `https://api.themoviedb.org/3/movie/${TMDBId}?api_key=${import.meta.env.VITE_TMDB_API_KEY}&language=en-US`;
 
-      console.log(data.movie_results[0])
+      // console.log(data.movie_results[0])
         // get general movie info from query of TMDB id
       return helper.fetchData(detailsFromTMDBURL)
       })
       .then(data => {
         setTMDBMovieData(prev => ({...prev,data}))
         const watchProvidersEndpoint = `https://api.themoviedb.org/3/movie/${data.id}/watch/providers?api_key=${import.meta.env.VITE_TMDB_API_KEY}`
-        console.log(data)
+        // console.log(data)
       return helper.fetchData(watchProvidersEndpoint)
       })
       .then(watchData => {
@@ -84,6 +80,10 @@ function SketchManager() {
     setSpinState(false)
   }
 
+  useEffect(()=>{
+    setWatchedRemoved(movieList.filter((elem,i) => !watchedList.includes(elem.id)));
+  },[movieList,watchedList])
+
     return (
         <>
           <div 
@@ -99,7 +99,7 @@ function SketchManager() {
                     sketch={Sketch}
                     onSpinStart={onSpinStart}
                     onSpinComplete={onSpinComplete}
-                    watchedList={watchedList}
+                    watchedRemoved={watchedRemoved}
                 />
                 
                 <div className='results'>
