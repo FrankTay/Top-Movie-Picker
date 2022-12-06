@@ -8,10 +8,12 @@ export default function SignUpModal({closeSignUpModal}) {
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
+  const [loading, setLoading] = useState(false);
+
   const [errorNotifs, setErrorNotifs] = useState({ userName:"",
                                          email:"",  
                                          password:"", })
-  const [isRequired, setIsRequired] = useState({ required: false })
+  const [isRequired, setIsRequired] = useState({ required: true })
 
 
 

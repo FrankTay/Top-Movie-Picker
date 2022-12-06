@@ -1,7 +1,7 @@
 
 :root {
-  --nav-w: 5.5rem;
-  --nav-w-neg: -5.5rem;
+  --nav-w: 6.5rem;
+  --nav-w-neg: -6.5rem;
   --nav-btn-offset: 5px;
 }
 
@@ -20,7 +20,7 @@ a {
 }
 
 a:hover {
-  color: #535bf2;
+  color: #4286f4;
 }
 
 .logo {
@@ -54,7 +54,6 @@ a:hover {
   animation-duration: 3s;
 }
 
-
 .backdrop {
   position: absolute;
   top: 0;
@@ -64,12 +63,13 @@ a:hover {
   z-index: -5;
   opacity: 0.15;
   background-repeat: no-repeat;
-  background-size: contain;
+  /* background-size: 100%; */
+  background-size: cover;
 }
 
 .App-container{
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   max-width: 100vw;
   overflow: hidden;
 }
@@ -91,6 +91,7 @@ label[for="nav-toggle-btn"] {
   right: var(--nav-btn-offset);
   font-size: xx-large;
   transition: .3s all;
+  cursor: pointer;
 }
 
 .nav-content { 
@@ -100,15 +101,15 @@ label[for="nav-toggle-btn"] {
   width: var(--nav-w);
   height: 100%;
   background: #EB5757;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to top, #000000, #EB5757);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to top, #000000, #EB5757); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  background: -webkit-linear-gradient(to top, #000000, #EB5757);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #000000, #EB5757); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   transition: .3s all;
 }
 
 /* Move hamburger over */
 #nav-toggle-btn[type="checkbox"]:checked ~ label[for="nav-toggle-btn"]{
   right: calc(var(--nav-w) + var(--nav-btn-offset));
+  
 }
 
 /* Move nav bar into view */
@@ -120,34 +121,71 @@ background: linear-gradient(to top, #000000, #EB5757); /* W3C, IE 10+/ Edge, Fir
  /* Shift page content over */
 #nav-toggle-btn[type="checkbox"]:checked ~ .route-container{
  margin-right: var(--nav-w);
- /* padding-right: 500px; */
-
 }
+
+/* .title{
+  border: 2px white solid;
+} */
 
 .route-container {
   transition: .3s all;
 }
 
-.results{
-  width: 50%;
-  padding-right: 40px;
+.sketch {
+  width: 33%;
+
 }
 
+.results{
+  width: 50%;
+  /* padding-right: 40px; */
+  padding-right: 5%;
+}
 
 .Movie-info {
-  background-repeat: no-repeat;
-  height: 100vh;
+  /* height: 100vh; */
   text-align: center;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   color: white;
+  /* text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+  color: black; */
+
+}
+
+.info-desc{
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+  color: black;
+}
+
+.movie-title{
+line-height: 1em;
 }
 
 .Movie-info h1{ 
   font-size: 2.5rem;
 }
 
-.Movie-info p{ 
-  font-size: 1.75rem;
+/* .Movie-info h3{ 
+  font-size: 2.5rem;
+} */
+
+
+.crew, .rank { 
+  font-size: 1.25rem;
+} 
+
+/* .Movie-info p{ 
+  font-size: 1.55rem;
+}  */
+
+.overview-text {
+  font-size: 1rem;
+}
+
+
+.watch-icon {
+  /* width: 2rem; */
+  height: 4.25rem;
 }
 
 .fade-in {
@@ -189,6 +227,153 @@ background: linear-gradient(to top, #000000, #EB5757); /* W3C, IE 10+/ Edge, Fir
   100% {
     background-color: #3a6186;
   }
+}
+/* #283048 */
+
+/* *************************************list******************* */
+/* 
+.cb, .cb-container, .cb-label  {
+  cursor: help;
+} */
+
+input[type="checkbox"].cb {
+  cursor: not-allowed;
+}
+
+label.tooltip { /* message box */
+  display: none;
+  background-color: #283048;
+  color: whitesmoke;
+  padding: .25rem;
+  border-radius: 2px;
+  white-space:nowrap;
+  position: absolute;
+  transform: translate(-138%, -12%);
+
+}
+
+input[type="checkbox"]::before { /* triangle  */
+  display: none;
+  content: " ";
+  background-color: #283048;
+  position: absolute;
+  width: 22px;
+  height: 22px; 
+  transform: translate(-135%, 5%) rotate(45deg);
+}
+
+
+.cb:hover + label {
+  display: inline-block;
+}
+
+.cb:hover::before {
+  display: inline-block;
+}
+
+/* input[type="checkbox"]:hover + label{
+  display: block;
+} */
+
+/* 
+.tooltip {
+  position: relative;
+  text-align: center;
+}
+
+.tooltip input {
+  cursor: not-allowed;
+}
+
+.tooltip.left {
+  width: 80%;
+} */
+
+.tooltip::after { /* message box */
+  background-color: #333;
+  border-radius: 10px;
+  max-width: 175px;
+  white-space:nowrap;
+  color: #fff;
+  display: none;
+  padding: 10px 15px;
+  position: absolute;
+  text-align: center;
+  /* z-index: 999; */
+}
+
+.tooltip::before { /* triangle  */
+  /* background-color: #333;
+  content: ' ';
+  display: none;
+  position: absolute;
+  width: 15px;
+  height: 15px; */
+}
+/* 
+.tooltip:hover::after {
+  display: block;
+}
+
+.tooltip:hover::before {
+  display: block;
+}
+
+.tooltip.left::after {
+  content: 'Sign in to track';
+  top: -25%;
+  left: 30%;
+  transform: translateX(calc(-100% - 10px));
+}
+*/
+
+.tooltip.left::before {
+  top: 50%;
+  left: 30%;
+  transform: translate(calc(-100% - 5px), -50%) rotate(45deg);
+} 
+@media only screen and (min-width: 1024px) {
+
+}
+
+@media only screen and (min-width: 1200px) {
+  .results {width: 50%;}
+  .Movie-info h1 {font-size: 3rem;}
+  .overview-text {font-size: 1rem;}
+  .crew, .rank{font-size: 1.5rem;}
+}
+
+@media only screen and (min-width: 1500px) {
+  .results {width: 55%;}
+  .Movie-info h1 {font-size: 4.5rem;}
+}
+
+@media only screen and (min-width: 1700px) {
+  .results {width: 60%;}
+  .overview-text {font-size: 1.15rem;}
+  .crew, .rank{font-size: 2rem;}
+
+}
+
+@media only screen and (min-width: 2000px) {
+  .results {width: 65%;}
+  .overview-text {font-size: 1.5rem;}
+}
+
+@media only screen and (min-width: 2500px) {
+  .results {width: 70%;}
+}
+
+
+
+
+/************* HEIGHT **************/
+@media only screen and (max-height: 768px) {
+  /* img.poster-img  {width: 50%;} */
+  .watch-icon {height: 2.25rem; }
+  .crew{font-size: 1rem;}
+
+  
 }
 
 /* 

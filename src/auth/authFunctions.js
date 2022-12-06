@@ -4,7 +4,7 @@ import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion, arrayR
 
 const usersDBRef = collection(db, 'users')
 
-export const signUpUser = (auth,userName, email,password) => {
+export const signUpUser = (auth, userName, email, password) => {
     return createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       console.log("adding username to auth object")

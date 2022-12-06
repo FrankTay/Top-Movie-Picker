@@ -1,6 +1,10 @@
-import imgUrl from './pinwhite214x165.png'
+import smNeedle from './pinwhite142x110.png'
+import lgNeedle from './pinwhite214x165.png'
+import {scaleData} from '../../../assets/js/sketchUtils'
 
 function Sketch(p5) {
+
+  console.log(scaleData)
   let onSpinStart;
   let onSpinComplete;
   let watchedRemoved;
@@ -10,8 +14,12 @@ function Sketch(p5) {
     onSpinComplete = props.onSpinComplete; 
     watchedRemoved = props.watchedRemoved;
   }
-  
-  console.log(watchedRemoved)
+
+  let smNeedleImg;
+  let lgNeedleImg;
+  const canvasWidthDividend = 2;
+  let canvasSizeX = window.innerWidth/canvasWidthDividend;
+  let canvasSizeY = window.innerHeight;
   let spinning = false;
   const valOfVisualStoppage = 0.018 //
   const wheelDiam = 500; // diameter of wheel
@@ -25,22 +33,25 @@ function Sketch(p5) {
   for (var i = 1; i < numPosAngles.length; i++) {
     numPosAngles[i] = numPosAngles[i-1] + sliceDegIncrement
   }
-
-  // let nums = new Array(totalSlices).fill(1).map((x,i) => {return i+1});
-  let canvasSizeX = window.innerWidth/2 ; //650;
-  let canvasSizeY = window.innerHeight ; //500;
-
+  
   //easing math
   let x = 0; // actual position
   let targetX = 0; // target position
   let easing = 0.555; //speed at which animation eases to stop (default 0.055)
   let lastDegRotation = 0;
 
+
+  p5.preload = () => {  
+    smNeedleImg = p5.loadImage(smNeedle);
+    lgNeedleImg = p5.loadImage(lgNeedle);
+  }
+
   p5.setup = () => {  
-    
         p5.createCanvas(canvasSizeX, canvasSizeY);
         checkForUpdatedProps()
-        createWheelNeedle()
+        createWheelNeedle(lgNeedleImg, lgNeedle )
+        // createWheelNeedle(smNeedleImg, smNeedle )
+
   }
 
   p5.draw = async () => {
@@ -49,7 +60,7 @@ function Sketch(p5) {
     p5.translate(-7000, p5.height / 2); //-7000 for 30 scale / -9500 for 40 scale
     
     p5.scale(30) //30 default
-    p5.rotate(-p5.radians(x)); //set positi 
+    p5.rotate(-p5.radians(x)); //set position
     let dx = targetX - x;
     x += dx * easing;
 
@@ -58,12 +69,50 @@ function Sketch(p5) {
       await onSpinComplete();
       spinning = false;
     } 
+    
     pieChart(wheelDiam, totalSlices)
     wordsPie(watchedRemoved, numPosAngles)
+
+  }
+
+
+  function createWheelNeedle(imageInfo,imageFile, scale){  
+    // const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
+    // console.log(lgNeedle)
+    // console.log(imageInfo)
+    const pin = p5.createImg(imageFile);
+
+    pin.id('needle')
+    const halfPinImgHeight = imageInfo.height/2
+    const wheelPerimeterOffset = 172;
+
+    pin.position(wheelRadius + wheelPerimeterOffset, (p5.height / 2) - halfPinImgHeight);
+    pin.mousePressed(wheelSpinAction)
+
+    const div = p5.createDiv();
+    const line1 = p5.createP("CLICK");
+    const line2 = p5.createP("TO");
+    const line3 = p5.createP("SPIN");
+    div.child(line1).child(line2).child(line3)
+
+    div.mousePressed(wheelSpinAction)
+    div.addClass("spinButton")
+    div.addClass("buttonAnimation")
+
+    div.position(wheelRadius + 266, p5.height/2 - 38)
+
+    
   }
 
   p5.windowResized = () => {
+    canvasSizeX = window.innerWidth/canvasWidthDividend ; //650;
+    canvasSizeY = window.innerHeight; //500;
     p5.resizeCanvas(canvasSizeX, canvasSizeY);
+    
+    const halfPinImgHeight = 165/2
+    const wheelPerimeterOffset = 172;
+    p5.select("#needle").position(wheelRadius + wheelPerimeterOffset, (p5.height / 2) - halfPinImgHeight);
+    p5.select(".spinButton").position(wheelRadius + 266, p5.height/2 - 38)
     p5.redraw()
   }
 
@@ -99,7 +148,7 @@ function Sketch(p5) {
         diameter,
         diameter,
         lastAngle,
-        lastAngle + p5.radians(sliceDegIncrement) 
+        lastAngle + p5.radians(sliceDegIncrement) ,
       );
       
       lastAngle += p5.radians(sliceDegIncrement);
@@ -115,25 +164,6 @@ function Sketch(p5) {
     p5.pop()
   }
 
-  function createWheelNeedle(){  
-    // const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
-    const pin = p5.createImg(imgUrl);
-    // pin.id('needle')
-    pin.position(wheelRadius+172, (p5.height / 2)-82.5);
-    pin.mousePressed(wheelSpinAction)
-
-    const div = p5.createDiv();
-    const line1 = p5.createP("CLICK");
-    const line2 = p5.createP("TO");
-    const line3 = p5.createP("SPIN");
-    div.child(line1).child(line2).child(line3)
-
-    div.mousePressed(wheelSpinAction)
-    div.addClass("spinButton")
-    div.addClass("buttonAnimation")
-
-    div.position(wheelRadius + 266, p5.height/2-38)
-  }
 
   function wheelSpinAction(){
     const step = p5.random(720,1440); //amount of degrees to rotate

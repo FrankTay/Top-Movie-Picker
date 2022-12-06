@@ -1,0 +1,6 @@
+TODO: NAV button animation
+add login link to movie page and list checkbox message
+make login modal from movie details consistent styling
+make mobile responsive
+add forgot password modal and functionality
+remove from watched from wheel option button for logged in users

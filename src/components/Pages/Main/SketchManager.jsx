@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from 'react'
 import { ReactP5Wrapper } from "react-p5-wrapper";
 
-import '../../App.css'
+import '../../../App.css'
 import MovieInfo from './MovieInfo.jsx';
-import Sketch from "../../assets/js/Sketch";
-import * as helper from "../../assets/js/helpers";
-import AllMovieData from "../../testing/movie-data";
-import { WatchedList, MovieListContext } from '../../contexts/Contexts';
+import Sketch from "./Sketch";
+import * as helper from "../../../assets/js/helpers";
+import AllMovieData from "../../../testing/movie-data";
+import { WatchedList, MovieListContext } from '../../../contexts/Contexts';
 
 
 
@@ -23,8 +23,15 @@ function SketchManager() {
     const [streamProviders, setStreamProviders] = useState({})
     const [imgPath, setImgPath] = useState("");
     const [watchedRemoved, setWatchedRemoved] = useState(movieList.filter((elem,i) => !watchedList.includes(elem.id)));
-    const rootImgPath = "https://image.tmdb.org/t/p/w1280"
+    const rootImgPath = "https://image.tmdb.org/t/p/original"
     const fadeClass = (!spinState) ? "fade-in-bg" : "fade-out";
+
+    // "backdrop_sizes": [
+    //   "w300",
+    //   "w780",
+    //   "w1280",
+    //   "original"
+    // ],
 
     const onSpinStart = (numExpected) => {
     //TODO: prevent spin again until complete
@@ -87,20 +94,20 @@ function SketchManager() {
     return (
         <>
           <div 
-           className={`backdrop ${fadeClass}`}
-          // style={!spinState ?{ background: `url(${imgPath}) no-repeat`, backgroundSize: "contain"}: null}
-          style={!spinState ?{ background: `url(${imgPath})`}: null}
+            className={`backdrop ${fadeClass}`}
+            style={!spinState ?{ backgroundImage: `url(${imgPath})`}: null}
           >
           </div>
           
             <main className="App-container">
-
-                <ReactP5Wrapper  
-                    sketch={Sketch}
-                    onSpinStart={onSpinStart}
-                    onSpinComplete={onSpinComplete}
-                    watchedRemoved={watchedRemoved}
-                />
+                <div className='sketch'>
+                  <ReactP5Wrapper  
+                      sketch={Sketch}
+                      onSpinStart={onSpinStart}
+                      onSpinComplete={onSpinComplete}
+                      watchedRemoved={watchedRemoved}
+                  />
+                </div>
                 
                 <div className='results'>
                   

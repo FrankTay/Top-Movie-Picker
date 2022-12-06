@@ -14,12 +14,12 @@ export default function About() {
           <h2 className="font-semibold text-3xl mb-5">Welcome</h2>
           <p>
 
-            Want to watch <a className='underline' href='https://www.imdb.com/chart/top/?ref_=nv_mv_250'>one of the greatest movies of all time</a>, but can't decide where to start?
+            Want to watch <a className='underline' target={`_blank`} href='https://www.imdb.com/chart/top/?ref_=nv_mv_250'>one of the greatest movies of all time</a>, but can't decide where to start?
             Let the wheel choose for you. Sign up to keep track of all the films you've already watched.
           </p>
           <hr className="my-6 border-gray-300" />
           <p>
-            Please check out my other projects @ <a className='underline' href='https://github.com/FrankTay'>FrankTay</a>
+            Data provided by  <a href='https://www.imdb.com/'>IMDB</a>, <a href='https://www.themoviedb.org/'>TMDB</a>, and <a href='https://www.omdbapi.com/'>OMDB</a>.
           </p>
           <button
             type="button"
@@ -27,7 +27,7 @@ export default function About() {
             data-mdb-ripple="true"
             data-mdb-ripple-color="light"
           >
-          <a href='https://github.com/FrankTay/Top-Movie-Picker'>Source code</a>
+          <a href='https://github.com/FrankTay/Top-Movie-Picker'>Source</a>
           </button>
         </div>
       </div>

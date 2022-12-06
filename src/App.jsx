@@ -8,7 +8,7 @@ import SideNav from './components/Navbar/SideNav';
 import { auth } from './firebase-config'; 
 import { getWatchedList } from './auth/authFunctions';
 import { UserContext, MovieListContext, WatchedList } from './contexts/Contexts';
-import SketchManager from './components/Pages/SketchManager';
+import SketchManager from './components/Pages/Main/SketchManager';
 import List from './components/Pages/List'
 import About from './components/Pages/About'
 import AllMovieData from "./testing/movie-data";
@@ -20,7 +20,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  let [user, setUser] = useState(null);
+  let [user, setUser] = useState("pending");
   let [watchedList, setWatchedList] = useState([]);
   const hamburgerIcon = <FontAwesomeIcon icon={faBars} />
   const closeIcon = <FontAwesomeIcon icon={faTimes} />
@@ -30,15 +30,15 @@ function App() {
 
   useEffect(() => {
     //listen for changes in logged in user
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      // console.log(`login change occured. current user is ${user?.displayName} with email ${user?.email}`)
+    const unsubscribe = auth.onAuthStateChanged(authUserState => {
+      // console.log(`login change occured. current user is ${authUserState?.displayName} with email ${authUserState?.email}`)
       
-      if(user && user !== "pending") {
-        getWatchedList(user.displayName)
+      if(authUserState) {
+        getWatchedList(authUserState.displayName)
         .then((list) => {
           if (list) {
             setWatchedList(list)
-            setUser(user)
+            setUser(authUserState)
           }
         })
       } else {
