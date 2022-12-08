@@ -66,20 +66,20 @@ function App() {
               </div>
             </Link>
             <input type="checkbox" id="nav-toggle-btn"/>
-                <label htmlFor="nav-toggle-btn">
-                  {hamburgerIcon}
-                </label>
+            <label htmlFor="nav-toggle-btn">
+              {hamburgerIcon}
+            </label>
 
-              <div className='route-container'>
-                <Routes>
-                  <Route exact path="/" element={<SketchManager />}/>
-                  <Route exact path="/list" element={<List />}/>
-                  <Route exact path="/about" element={<About />} />              
-                </Routes>
-              </div>
-              <nav className='nav-content' >
-                  <SideNav/>
-              </nav>
+            <div className='route-container'>
+              <Routes>
+                <Route exact path="/" element={<SketchManager />}/>
+                <Route exact path="/list" element={<List />}/>
+                <Route exact path="/about" element={<About />} />              
+              </Routes>
+            </div>
+            <nav className='nav-content' >
+                <SideNav onClick={() => console.log("fffff")}/>
+            </nav>
 
           </WatchedList.Provider>
         </MovieListContext.Provider>

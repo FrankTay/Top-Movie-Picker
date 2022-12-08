@@ -62,7 +62,7 @@ export default function List() {
        
         
       </td>
-      <td >
+      <td className='list-img'>
       {!movie.image}
         <img className="w-1/2" src={movie.image}/>
       </td>

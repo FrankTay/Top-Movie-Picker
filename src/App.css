@@ -332,7 +332,16 @@ input[type="checkbox"]::before { /* triangle  */
   left: 30%;
   transform: translate(calc(-100% - 5px), -50%) rotate(45deg);
 } 
-@media only screen and (min-width: 1024px) {
+
+@media only screen and (max-width: 860px) {
+  .App-container {flex-direction: column;}
+  .results{ width: 100%;}
+  .logo,.list-img {display: none;}
+  
+}
+
+
+@media only screen and (min-width: 860px) {
 
 }
 
@@ -373,41 +382,5 @@ input[type="checkbox"]::before { /* triangle  */
   .watch-icon {height: 2.25rem; }
   .crew{font-size: 1rem;}
 
-  
-}
 
-/* 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 5s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
