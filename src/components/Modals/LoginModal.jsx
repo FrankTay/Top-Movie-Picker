@@ -1,22 +1,33 @@
 import { useState, useRef } from 'react'
 import { auth } from '../../firebase-config'; 
 import { loginUser } from "../../auth/authFunctions" ;
-import ForgotPasswordModal from './ForgotPasswordModal';
 
-export default function LoginModal({closeLoginModal}) { 
+export default function LoginModal({closeLoginModal, setShowSignUpModal, setShowLoginModal, setShowFPpModal}) { 
   const emailRef = useRef()
   const passwordRef = useRef()
   const [loading, setLoading] = useState(false);
+  
   const [errorNotifs, setErrorNotifs] = useState({ userName:"",
                                          email:"",  
                                          password:"", })
+
+  const openFPModal = () => {
+    setShowFPpModal(true);
+    setShowLoginModal(false);
+  }
+                                         
+  const swapModals = () => {
+    setShowSignUpModal(true);
+    setShowLoginModal(false);
+  }
+
+
 
   const loginUserFunc = async (e) => {
     e.preventDefault();
     setLoading(true)
     let attemptLogin = await loginUser(auth, emailRef.current.value.trim(), passwordRef.current.value)
       .then(response => {
-        // closeLoginModal();
         // console.log(response?.email)
         switch (response) {
           case "auth/invalid-email":
@@ -36,13 +47,8 @@ export default function LoginModal({closeLoginModal}) {
             // TODO: show a user created successfully popup
             closeLoginModal();
 
-        }
-        
-
-
-        // result.email
+        } 
       })
-      
   }
 
   return (
@@ -98,9 +104,10 @@ export default function LoginModal({closeLoginModal}) {
                       }
                       <div>Sign in</div>
                     </button>
-                    <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+                    <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" onClick={openFPModal} href="#" >
                       Forgot Password?
                     </a>
+                    <p className='mt-3'>New User? <a href='#' onClick={swapModals}>Sign Up</a></p>
                   </div>
                 </form>
                 

@@ -59,8 +59,8 @@ export default function List() {
           !user ?  <div className="cb-container"> <input id={`cb${i}`} className="cb w-6 h-6 ml-6" disabled onClick={() => setShowLoginModal(true)} type="checkbox" /><label onClick={() => setShowLoginModal(true)} className='cb-label tooltip' htmlFor={`cb${i}`} >Log in to track</label></div> :
           <input className="w-6 h-6 ml-6" onChange={(e) => checkBoxAction(e,i)} data-index={i} checked={checkStates[i]} type="checkbox"/> 
         } 
-       
         
+        <span className='cell-screen-list-watched-text ml-3 text-sm'>Watched?</span>
       </td>
       <td className='list-img'>
       {!movie.image}
@@ -93,7 +93,7 @@ export default function List() {
     <>
       <div className='list-container m-3'>
         <div className=" flex justify-center">
-          <div className="bg-white shadow-lg hover:shadow-xl w-6/12 rounded-md">
+          <div className="bg-white shadow-lg hover:shadow-xl w-8/12 rounded-md">
             <table className="table flex table-auto w-full leading-normal">
               <thead className="uppercase text-gray-600 text-xs font-semibold w-full bg--200 border-b-4 border-maroon-500">
                 <tr className="hidden w-full md:table-row text-base">

@@ -2,20 +2,21 @@ import { useState, useContext, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import LoginModal from '../Modals/LoginModal';
 import SignUpModal from '../Modals/SignUpModal';
+import ForgotPasswordModal from '../Modals/ForgotPasswordModal';
 import { SignedIn } from './SignedIn';
 import { SignedOff } from './SignedOff';
 import { auth } from '../../firebase-config'
 import { signOut } from "firebase/auth";
 import { UserContext } from '../../contexts/Contexts'; 
 
-export default function SideNav() {
+export default function SideNav({toggleMenu}) {
     
     const [showNav, setShowNav] = useState(false);
     const userState = useContext(UserContext)
     const user = userState.user
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showSignUpModal, setShowSignUpModal] = useState(false);
-
+    const [showFPModal, setShowFPpModal] = useState(false);
     const closeLoginModal = () => {
         setShowLoginModal(false);
     }
@@ -23,6 +24,19 @@ export default function SideNav() {
     const closeSignUpModal = () => {
         setShowSignUpModal(false);
     }
+
+    const closeFPModal = () => {
+        setShowFPpModal(false);
+    }
+
+    const openSignUpModal = () => {
+        setShowSignUpModal(true);
+    }
+
+    const toggleSignUpModal = () => {
+        setShowSignUpModal(prev => !prev);
+    }
+
     
     //TODO: move func to authfuncs
     const logOff = () => {
@@ -35,6 +49,12 @@ export default function SideNav() {
                 console.log("we had an error")
                 console.log(error)
             })
+    }
+
+    const closeMenuOnLinkClick = () => {
+        let menuElement = document.querySelector("#nav-toggle-btn")
+        menuElement.checked = false;
+        toggleMenu();
     }
     
     //TODO: is this useeffect necessary?
@@ -57,13 +77,13 @@ export default function SideNav() {
                             check user
                     </button>    */}
                     
-                    <li>
+                    <li onClick={() => closeMenuOnLinkClick()}>
                         <p className='text-lg mb-2 underline'><Link to={"/"}>HOME</Link></p>
                     </li>
-                    <li>
+                    <li onClick={() => closeMenuOnLinkClick()}>
                     <p className='text-lg mb-2 underline'> <Link to={"/list"}>LIST</Link></p>
                     </li>
-                    <li>
+                    <li onClick={() => closeMenuOnLinkClick()}>
                     <p className='text-lg mb-2 underline'><Link to={"/about"}>ABOUT</Link></p>
                     </li>
                 </ul>
@@ -77,8 +97,24 @@ export default function SideNav() {
             </div>
             
             {/* if modal state is set to true, show the modal, otherwise show nothing */}
-            {showLoginModal ? <LoginModal closeLoginModal={closeLoginModal}/> : null}
-            {showSignUpModal ? <SignUpModal closeSignUpModal={closeSignUpModal}/> : null}
+            {showLoginModal ? 
+                <LoginModal 
+                    closeLoginModal={closeLoginModal}
+                    setShowSignUpModal={setShowSignUpModal}
+                    setShowLoginModal={setShowLoginModal}
+                    setShowFPpModal={setShowFPpModal}
+                /> 
+            : null}
+
+            {showSignUpModal ? 
+                <SignUpModal
+                    closeSignUpModal={closeSignUpModal}
+                    setShowSignUpModal={setShowSignUpModal}
+                    setShowLoginModal={setShowLoginModal}
+                 /> 
+            : null}
+
+            {showFPModal ? <ForgotPasswordModal closeFPModal={closeFPModal}/> : null}
         </div>
        
   )

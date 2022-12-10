@@ -1,5 +1,5 @@
 import { db } from '../firebase-config'; 
-import {createUserWithEmailAndPassword,signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {createUserWithEmailAndPassword,signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 const usersDBRef = collection(db, 'users')
@@ -33,6 +33,20 @@ export const loginUser = (auth, email, password) => {
     const errorCode = error.code;
     return errorCode
   });
+
+}
+
+export const forgotPassword = (auth, email) => {
+  return sendPasswordResetEmail(auth, email)
+  // .then(() => {
+  //   console.log("Password reset email sent!")
+  //   // ..
+  // })
+  // .catch((error) => {
+  //   const errorCode = error.code;
+  //   const errorMessage = error.message;
+  //   // ..
+  // });
 
 }
 

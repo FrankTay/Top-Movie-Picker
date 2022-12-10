@@ -11,11 +11,10 @@ function Sketch(p5) {
   p5.updateWithProps = props => { 
     onSpinStart = props.onSpinStart;
     onSpinComplete = props.onSpinComplete; 
-    watchedRemoved = props.watchedRemoved;
+    if (props.watchedRemoved) watchedRemoved = props.watchedRemoved;
   }
-
+  
   let b = positioning(window.innerWidth)
-  console.log(b.translate)
   let smNeedleImg;
   let lgNeedleImg;
   const canvasWidthDividend = 2;
@@ -38,7 +37,7 @@ function Sketch(p5) {
   //easing math
   let x = 0; // actual position
   let targetX = 0; // target position
-  let easing = 0.555; //speed at which animation eases to stop (default 0.055)
+  let easing = 0.5055; //speed at which animation eases to stop (default 0.055)
   let lastDegRotation = 0;
 
 
@@ -51,12 +50,10 @@ function Sketch(p5) {
     p5.createCanvas(canvasSizeX, canvasSizeY);
     checkForUpdatedProps()
 
-
     let needleImgInfo = (b.pinSize === "l") ? lgNeedleImg : smNeedleImg
     let needleImgFile = (b.pinSize === "l") ? lgNeedleImgFile : smNeedleImgFile
     createWheelNeedle(needleImgInfo , needleImgFile )
-    // createWheelNeedle(needleImg, smNeedle )
-
+    resetWheel()
   }
 
   p5.draw = async () => {
@@ -72,31 +69,23 @@ function Sketch(p5) {
     // if dx is at a level where the spinner cannot visually be determined to be moving any further
     if (dx < valOfVisualStoppage && spinning){ 
       await onSpinComplete();
-      let d = document.querySelector(".sketch")
-      
-      setTimeout(()=> {
-        window.scrollTo({
-          top: d.offsetHeight,
-          left: 100,
-          behavior: 'smooth'
-        });
-        console.log("scrollin")
-      },100)
-      
       spinning = false;
+
+      if (window.innerWidth < 860){ //Auto scroll to results when screen is ta
+        let resultElem = document.querySelector(".results")
+        setTimeout(()=> {
+          resultElem.scrollIntoView({behavior: "smooth"})
+        } ,1000)      
+      }
     } 
-    
+
     pieChart(wheelDiam, totalSlices)
     wordsPie(watchedRemoved, numPosAngles)
-
   }
 
   function createWheelNeedle(imageInfo,imageFile, scale){  
-    // const pin = p5.createImg('./src/assets/img/pinwhite214x165.png', "Pin wheel needle");
-    // console.log(imageFile)
-    console.log(imageInfo)
-    const pin = p5.createImg(imageFile);
 
+    const pin = p5.createImg(imageFile);
     pin.id('needle')
     const halfPinImgHeight = imageInfo.height/2
     const wheelPerimeterOffset = b.wheelPerimeterOffset;
@@ -151,7 +140,6 @@ function Sketch(p5) {
       p5.text(x.rank,(wheelRadius) * textPlacement, 0)  
         p5.pop()
     });
-    
   }
 
   function pieChart(diameter, totalSlices) {
@@ -192,6 +180,8 @@ function Sketch(p5) {
     const expectedLandedNumber = getEstimatedEndPosition(step) -1
     onSpinStart(expectedLandedNumber);
   }
+
+
   //wheel math to deduce what positon when spin complete
   function getEstimatedEndPosition(step){
     //lastDegRotation compensates for current position for subsequent spins
@@ -256,11 +246,11 @@ export default Sketch
 
 // import smNeedle from './pinwhite142x110.png'
 // import lgNeedle from './pinwhite214x165.png'
-// import {scaleData} from '../../../assets/js/sketchUtils'
+// import {breakpointData} from '../../../assets/js/sketchUtils'
 
 // function Sketch(p5) {
 
-//   console.log(scaleData)
+//   console.log(breakpointData)
 //   let onSpinStart;
 //   let onSpinComplete;
 //   let watchedRemoved;

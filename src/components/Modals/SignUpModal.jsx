@@ -3,7 +3,7 @@ import { auth } from '../../firebase-config';
 import { signUpUser } from "../../auth/authFunctions" ;
 
 
-export default function SignUpModal({closeSignUpModal}) {
+export default function SignUpModal({closeSignUpModal, setShowSignUpModal, setShowLoginModal,}) {
   const userNameRef = useRef()
   const emailRef = useRef()
   const passwordRef = useRef()
@@ -15,7 +15,10 @@ export default function SignUpModal({closeSignUpModal}) {
                                          password:"", })
   const [isRequired, setIsRequired] = useState({ required: true })
 
-
+  const swapModals = () => {
+    setShowSignUpModal(false);
+    setShowLoginModal(true);
+  }
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -25,12 +28,13 @@ export default function SignUpModal({closeSignUpModal}) {
 
     // check password meets minimum length
     if (passwordRef.current.value.length < 6) {
-      console.log('password too short')
+      // console.log('password too short')
       return setErrorNotifs((prev) => ({ ...prev, password: " Password should be at least 6 characters"}))
     }
+    
     // check for same typed passwords
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      console.log('inconsist pass')
+      // console.log('inconsist pass')
       return setErrorNotifs((prev) => ({ ...prev, password: "Passwords do not match"}))
     }
 
@@ -102,7 +106,9 @@ export default function SignUpModal({closeSignUpModal}) {
                     {/* <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
                       Forgot Password?
                     </a> */}
+                    
                   </div>
+                  <p className='mt-5'>Already registered? <a href='#' onClick={swapModals}>Log In</a></p>
                 </form>
                 
                 {/*footer*/}

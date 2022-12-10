@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import spinWheelIcon from "./spinning-wheel.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -22,8 +22,15 @@ import {
 function App() {
   let [user, setUser] = useState("pending");
   let [watchedList, setWatchedList] = useState([]);
+  let [showMenu, setShowMenu] = useState(false);
+  const menuCheckbox = useRef()
+
   const hamburgerIcon = <FontAwesomeIcon icon={faBars} />
   const closeIcon = <FontAwesomeIcon icon={faTimes} />
+
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
 
   //TODO: change to fetch data from server on deploy
   let [IMDBMovieList, setIMDBMovieList] = useState(AllMovieData.items);
@@ -65,9 +72,11 @@ function App() {
                 <img className='h-20' alt="home" src={spinWheelIcon}/>
               </div>
             </Link>
-            <input type="checkbox" id="nav-toggle-btn"/>
+
+            {/* menu button */}
+            <input ref={menuCheckbox} onChange={toggleMenu} checked={showMenu} type="checkbox" id="nav-toggle-btn"/>
             <label htmlFor="nav-toggle-btn">
-              {hamburgerIcon}
+              {(showMenu) ? closeIcon : hamburgerIcon}
             </label>
 
             <div className='route-container'>
@@ -78,7 +87,11 @@ function App() {
               </Routes>
             </div>
             <nav className='nav-content' >
-                <SideNav onClick={() => console.log("fffff")}/>
+                <SideNav 
+                  onClick={() => console.log("fffff")}
+                  toggleMenu={toggleMenu}
+
+                />
             </nav>
 
           </WatchedList.Provider>
