@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import LoginModal from '../Modals/LoginModal';
 import SignUpModal from '../Modals/SignUpModal';
 import ForgotPasswordModal from '../Modals/ForgotPasswordModal';
+import OptionsModal from '../Modals/OptionsModal';
 import { SignedIn } from './SignedIn';
 import { SignedOff } from './SignedOff';
 import { auth } from '../../firebase-config'
@@ -11,12 +12,15 @@ import { UserContext } from '../../contexts/Contexts';
 
 export default function SideNav({toggleMenu}) {
     
-    const [showNav, setShowNav] = useState(false);
+    // const [showNav, setShowNav] = useState(false);
     const userState = useContext(UserContext)
-    const user = userState.user
+    const {user} = userState
+    
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showSignUpModal, setShowSignUpModal] = useState(false);
     const [showFPModal, setShowFPpModal] = useState(false);
+    const [showOptionsModal, setShowOptionsModal] = useState(false);
+
     const closeLoginModal = () => {
         setShowLoginModal(false);
     }
@@ -29,10 +33,14 @@ export default function SideNav({toggleMenu}) {
         setShowFPpModal(false);
     }
 
-    const openSignUpModal = () => {
-        setShowSignUpModal(true);
+    const closeOptionsModal = () => {
+        setShowOptionsModal(false);
     }
 
+    const openOptionsModal = () => {
+        setShowOptionsModal(true);
+    }
+    
     const toggleSignUpModal = () => {
         setShowSignUpModal(prev => !prev);
     }
@@ -43,7 +51,6 @@ export default function SideNav({toggleMenu}) {
         signOut(auth)
             .then((res) => {
                 userState.setUser(null)
-                // setShowNav(false)
             })
             .catch((error)=> {
                 console.log("we had an error")
@@ -70,7 +77,7 @@ export default function SideNav({toggleMenu}) {
     }, [user]);
 
   return (
-        <div className='my-2  h-full flex flex-col justify-between '>
+        <div className='my-2 h-full flex flex-col justify-between'>
             <div>
                 <ul className="text-center">
                     {/* <button className='border' type='button' onClick={() => console.log(user, auth?.currentUser?.displayName)}>
@@ -89,9 +96,14 @@ export default function SideNav({toggleMenu}) {
                 </ul>
             </div>
             <div className='auth-btns'>
-            {user ? <SignedIn logOff={logOff}/> : <SignedOff 
-                    setShowSignUpModal={setShowSignUpModal}
-                    setShowLoginModal={setShowLoginModal}
+            {user ? 
+                <SignedIn 
+                    logOff={logOff}
+                    openOptionsModal={openOptionsModal}
+                    setShowOptionsModal={setShowOptionsModal}
+                /> : <SignedOff 
+                        setShowSignUpModal={setShowSignUpModal}
+                        setShowLoginModal={setShowLoginModal}
                 />
             }
             </div>
@@ -111,6 +123,13 @@ export default function SideNav({toggleMenu}) {
                     closeSignUpModal={closeSignUpModal}
                     setShowSignUpModal={setShowSignUpModal}
                     setShowLoginModal={setShowLoginModal}
+                 /> 
+            : null}
+            
+            {showOptionsModal ? 
+                <OptionsModal
+                    closeOptionsModal={closeOptionsModal}
+                    setShowOptionsModal={setShowOptionsModal}
                  /> 
             : null}
 

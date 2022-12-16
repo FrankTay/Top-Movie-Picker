@@ -63,8 +63,8 @@ export default function List() {
         <span className='cell-screen-list-watched-text ml-3 text-sm'>Watched?</span>
       </td>
       <td className='list-img'>
-      {!movie.image}
-        <img className="w-1/2" src={movie.image}/>
+      {/* {!movie.image} */}
+        <img className="w-16" src={movie.image}/>
       </td>
       <td className="p-1 md:p-3">
         <p className="text-center">{movie.rank}</p>

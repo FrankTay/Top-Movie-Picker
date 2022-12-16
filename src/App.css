@@ -49,7 +49,7 @@ a:hover {
   color: white;
   line-height: 115%;
   cursor: pointer;
-  z-index: 500;
+  z-index: 0;
 }
 
 .buttonAnimation{
@@ -59,7 +59,7 @@ a:hover {
   animation-duration: 3s;
 }
 
-.backdrop {
+.main-backdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -72,7 +72,7 @@ a:hover {
 }
 
 .results-backdrop {
-  /* opacity: 0.15; */
+  opacity: 0.15;
   position: absolute;
   /* top: 0; */
   left: 0;
@@ -80,7 +80,7 @@ a:hover {
   width: 100%;
   height: 100%;
   opacity: 0.15;
-  z-index: -500;
+  z-index: -500 !important;
 
   background-repeat: no-repeat;
   background-size: cover; 
@@ -112,7 +112,7 @@ label[for="nav-toggle-btn"] {
   font-size: xx-large;
   transition: .3s all;
   cursor: pointer;
-  z-index: 500;
+  z-index: 40;
 }
 
 .nav-content { 
@@ -301,17 +301,15 @@ input[type="checkbox"]::before { /* triangle  */
   .App-container {flex-direction: column;}
   .results{ width: 100%; padding-right: 2%;}
   .logo,.list-img {display: none;}
-  .backdrop{background-image: none;}
   .spin-again-btn-sm-screen{ display: flex;}
   .cell-screen-list-watched-text{display: block;}
   .title-box {display: flex; justify-content: space-between;}
 
-  
 }
 
 
 @media only screen and (min-width: 860px) {
-
+  .results-backdrop{display: none;}
 }
 
 @media only screen and (min-width: 1200px) {
@@ -352,4 +350,10 @@ input[type="checkbox"]::before { /* triangle  */
   .crew{font-size: 1rem;}
 
 
+}
+
+/* Toggle A */
+.option-toggle:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: #48bb78;
 }

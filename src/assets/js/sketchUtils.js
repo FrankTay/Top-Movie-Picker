@@ -3,8 +3,6 @@ export const breakpointData = {
     1200:    {pinSize: "l", translate: -7100, scale: 30, wheelPerimeterOffset: 65, btnXTextOffset: 159 , canvX:window.innerWidth},
     1024:    {pinSize: "s", translate: -7150, scale: 30, wheelPerimeterOffset: 65, btnXTextOffset: 115, canvX:window.innerWidth},
     860:     {pinSize: "l", translate: -7000, scale: 30, wheelPerimeterOffset: 172, btnXTextOffset: 266, canvX:window.innerWidth},
-
-    // 540:     {pinSize: "s", translate: -7150, scale: 30, wheelPerimeterOffset: 65, btnXTextOffset: 115, canvX:window.innerWidth},
     540:     {pinSize: "l", translate: -7150, scale: 30, wheelPerimeterOffset: 65, btnXTextOffset: 159, canvX:window.innerWidth},
     480:     {pinSize: "s", translate: -4775, scale: 20, wheelPerimeterOffset: -70, btnXTextOffset: -15, canvX:window.innerWidth},
 }

@@ -47,7 +47,6 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
         const toggleStatus = e.target.checked;
         const currentUser = auth?.currentUser?.displayName;
         const action = toggleStatus ? "ADD" : "REMOVE";
-
         (toggleStatus) ? setCheckedState(true) : setCheckedState(false)
 
         modifyWatchedList(currentUser, user.email, IMDBmovieData.IMDBId, action)
@@ -73,8 +72,10 @@ function MovieInfo({IMDBmovieData, TMDBmovieData, streamProviders, spinState}) {
         
         
             <div className={`${fadeClass} Movie-info`}>
-                <div className='results-backdrop'
-                style={window.innerWidth < 859 ? { backgroundImage: `url(${rootImgPath+TMDBmovieData?.backdrop_path})`}: null}
+                <div
+                    className='results-backdrop'
+                    style={window.innerWidth < 860 ? { backgroundImage: `url(${rootImgPath+TMDBmovieData?.backdrop_path})`}: null}
+                    // style={ {backgroundImage: `url(${rootImgPath+TMDBmovieData?.backdrop_path})`}}
                 ></div>
 
                 <section className='title-box'>

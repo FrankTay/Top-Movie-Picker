@@ -31,16 +31,14 @@ export default function LoginModal({closeLoginModal, setShowSignUpModal, setShow
         // console.log(response?.email)
         switch (response) {
           case "auth/invalid-email":
-            console.log("bad email")
+            // console.log("bad email")
             setErrorNotifs(prev => ({ userName:"", email: "Incorrect Email", password:""}))
             setLoading(false)
-
             break;
           case "auth/wrong-password":
-            console.log("bad password")
+            // console.log("bad password")
             setErrorNotifs(prev => ({ userName:"", email: "", password: "Incorrect Password"}))
             setLoading(false)
-
             break
           default:
             setLoading(false)
